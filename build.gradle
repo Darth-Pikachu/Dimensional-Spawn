@@ -1,0 +1,111 @@
+buildscript {
+    repositories {
+        maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
+        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
+    }
+}
+apply plugin: 'net.minecraftforge.gradle'
+
+apply plugin: 'maven-publish'
+apply plugin: 'org.spongepowered.mixin'
+
+version = '1.0'
+group = 'darthpikachu' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "dimensionalspawn"
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+
+mixin {
+    add sourceSets.main, "dimensionalspawn.refmap.json"
+}
+
+minecraft {
+    mappings channel: 'snapshot', version: '20210309-1.16.5'
+    runs {
+        client {
+            workingDirectory project.file('run')
+            arg "-mixin.config=dimensionalspawn.mixins.json"
+            property 'forge.logging.markers', 'REGISTRIES'
+            properties 'mixin.env.disableRefMap': 'true'
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                dimensionalspawn {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+            arg "--mixin.config=dimensionalspawn.mixins.json"
+            property 'forge.logging.markers', 'REGISTRIES'
+            properties 'mixin.env.disableRefMap': 'true'
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                dimensionalspawn {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            args '--mod', 'dimensionalspawn', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+
+            mods {
+                dimensionalspawn {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+dependencies {
+    implementation 'org.jetbrains:annotations:20.1.0'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.1.4'
+    annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
+}
+
+jar {
+    manifest {
+        attributes([
+            "Specification-Title": "dimensionalspawn",
+            "Specification-Vendor": "dimensionalspawnsareus",
+            "Specification-Version": "1", // We are version 1 of ourselves
+            "Implementation-Title": project.name,
+            "Implementation-Version": "${version}",
+            "Implementation-Vendor" :"dimensionalspawnsareus",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+            "MixinConfigs": "dimensionalspawn.mixins.json"
+        ])
+    }
+}
+
+
+jar.finalizedBy('reobfJar') 
+
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file:///${project.projectDir}/mcmodsrepo"
+        }
+    }
+}

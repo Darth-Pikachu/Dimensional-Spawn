@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "darth.dimensional.mixins",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "dimensionalspawn.refmap.json",
+  "mixins": [
+    "ServerMixin",
+    "PlayerJoinMixin",
+    "ServerPlayerMixin"
+  ],
+  "minVersion": "0.8"
+}

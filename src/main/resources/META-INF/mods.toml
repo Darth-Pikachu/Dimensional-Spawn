@@ -1,0 +1,24 @@
+modLoader="javafml"
+loaderVersion="[36,)"
+license="MIT"
+[[mods]]
+modId="dimensionalspawn"
+version="${file.jarVersion}"
+displayName="Dimensional Spawn"
+credits="Jaquobia"
+authors="Darth_Pikachu"
+description='''
+Allows a packdev or player to change the default spawn dimension.
+'''
+[[dependencies.dimensionalspawn]] #optional
+    modId="forge"
+    mandatory=true
+    versionRange="[36,)" #mandatory
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.dimensionalspawn]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16.5,1.17)"
+    ordering="NONE"
+    side="BOTH"
