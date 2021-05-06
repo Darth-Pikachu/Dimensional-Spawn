@@ -18,10 +18,4 @@ public abstract class ServerPlayerMixin
     {
         return true;
     }
-
-    @Redirect(method = "changeDimension", at = @At(value = "FIELD", target = "Lnet/minecraft/world/World;OVERWORLD:Lnet/minecraft/util/RegistryKey;"))
-    public RegistryKey<World> endCreditFix()
-    {
-        return DimensionalConfig.COMMON.getWorldKey();
-    }
 }
